@@ -1,4 +1,5 @@
 ﻿using StudentManApi.Models;
+using StudentManApi.ResourceParameter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace StudentManApi.Services
     public interface IStuRepository
     {
         //查
-        Task<IEnumerable<Student>>GetStudentsAsync(string keyword,string address);
+        Task<IEnumerable<Student>>GetStudentsAsync(StudentParameter studentParameter);
         Task<IEnumerable<Student>> GetStudentsAsync(string keyword, int teacherId);
         Task<IEnumerable<Student>> GetStudentsByTeacherIdAsync(int TeacherId);
         Task<Student> GetStudentAsync(Guid studentId);

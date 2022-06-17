@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentManApi.Models;
+using StudentManApi.ResourceParameter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,20 +32,31 @@ namespace StudentManApi.Services
             return await  _context.Students.Include(t=>t.Grades).FirstOrDefaultAsync(c => c.StudentId == studentId);
         }
         //根据姓名查出某些学生
-        public async Task<IEnumerable<Student>> GetStudentsAsync(string keyword,string address)
+        public async Task<IEnumerable<Student>> GetStudentsAsync(StudentParameter studentParameter)
         {
+            if (studentParameter==null)
+            {
+                throw new ArgumentNullException(nameof(studentParameter));
+            }
+
             IQueryable<Student> result = _context.Students.Include(t => t.Grades);
-            if (!string.IsNullOrWhiteSpace(keyword))
+            //if (string.IsNullOrWhiteSpace(studentParameter.Keyword)&& string.IsNullOrWhiteSpace(studentParameter.AddressBelong))
+            //{
+            //    return await result.ToListAsync();
+            //}
+            if (!string.IsNullOrWhiteSpace(studentParameter.Keyword))
             {
-                keyword.Trim();
-                result = result.Where(t => t.Name.Contains(keyword));
+                studentParameter.Keyword.Trim();
+                result = result.Where(t => t.Name.Contains(studentParameter.Keyword));
             }
-            if (!string.IsNullOrWhiteSpace(address))
+            if (!string.IsNullOrWhiteSpace(studentParameter.AddressBelong))
             {
-                address.Trim();
-                result = result.Where(t => t.Address==address);
+                studentParameter.AddressBelong.Trim();
+                result = result.Where(t => t.Address== studentParameter.AddressBelong);
             }
-             return await result.ToListAsync();
+            result = result.Skip(studentParameter.PageSize * (studentParameter.PageNumber - 1))//第几页,就跳过该页所有的数据
+            .Take(studentParameter.PageSize);
+            return await result.ToListAsync();
         }
 
         //判断某个学生是否存在

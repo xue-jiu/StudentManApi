@@ -9,6 +9,7 @@ namespace StudentManApi.Dtos
     {
         [Key]
         public Guid StudentId { get; set; }
+        [Display(Name="学生名字")]
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }

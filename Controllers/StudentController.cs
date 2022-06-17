@@ -43,7 +43,7 @@ namespace StudentManApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStudents([FromQuery] StudentParameter studentParameter)
         {
-            var studentsFromRepo = await _stuRepository.GetStudentsAsync(studentParameter.Keyword, studentParameter.AddressBelong);
+            var studentsFromRepo = await _stuRepository.GetStudentsAsync(studentParameter);
             if (studentsFromRepo == null || !studentsFromRepo.Any())
             {
                 return NotFound("没有符合该特征的学生");
