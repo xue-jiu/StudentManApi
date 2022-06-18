@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.Options;
 using StudentManApi.API.Helper;
 using StudentManApi.Dtos;
+using StudentManApi.Helpers;
 using StudentManApi.Models;
 using StudentManApi.ResourceParameter;
 using StudentManApi.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace StudentManApi.Controllers
@@ -40,10 +42,23 @@ namespace StudentManApi.Controllers
             return Ok(_mapper.Map<StudentDto>(studentFromRepo));
         }
         //关键字查询某个学生
-        [HttpGet]
+        [HttpGet(Name =nameof(GetStudents))]
         public async Task<IActionResult> GetStudents([FromQuery] StudentParameter studentParameter)
         {
             var studentsFromRepo = await _stuRepository.GetStudentsAsync(studentParameter);
+            //前后导航
+            var previouLink = studentsFromRepo.HasPrevious ? CreateStudentUri(studentParameter, ResourceUriType.PreviousPage):null;
+            var nextLink = studentsFromRepo.HasNext ? CreateStudentUri(studentParameter, ResourceUriType.NextPage) : null;
+            var paginationMetadata = new
+            {
+                totalCount = studentsFromRepo.TotalItemCount,
+                pageSize = studentsFromRepo.PageSize,
+                currentPage = studentsFromRepo.CurrentPage,
+                TotalPage = studentsFromRepo.TotalPage,
+                previouLink,
+                nextLink
+            };
+            Response.Headers.Add("paginationMetadata", JsonSerializer.Serialize(paginationMetadata));
             if (studentsFromRepo == null || !studentsFromRepo.Any())
             {
                 return NotFound("没有符合该特征的学生");
@@ -140,5 +155,40 @@ namespace StudentManApi.Controllers
 //        {
 //            var options = HttpContext.RequestServices.GetService<IOptions<ApiBehaviorOptions>>();
 //;        }
+
+        private string CreateStudentUri(StudentParameter studentParameter,ResourceUriType resourceUriType)
+        {
+            switch (resourceUriType)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link(nameof(GetStudents), new
+                    {
+                        pageNumber = studentParameter.PageNumber-1,
+                        pageSize=studentParameter.PageSize,
+                        Keyword= studentParameter.Keyword,
+                        Address=studentParameter.AddressBelong
+                    });
+
+                case ResourceUriType.NextPage:
+                    return Url.Link(nameof(GetStudents), new
+                    {
+                        pageNumber = studentParameter.PageNumber + 1,
+                        pageSize = studentParameter.PageSize,
+                        Keyword = studentParameter.Keyword,
+                        Address = studentParameter.AddressBelong
+                    });
+
+                default:
+                    return Url.Link(nameof(GetStudents), new
+                    {
+                        pageNumber = studentParameter.PageNumber,
+                        pageSize = studentParameter.PageSize,
+                        Keyword = studentParameter.Keyword,
+                        Address = studentParameter.AddressBelong
+                    });
+
+
+            }
+        }
     }
 }

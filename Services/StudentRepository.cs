@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StudentManApi.Helper;
 using StudentManApi.Models;
 using StudentManApi.ResourceParameter;
 using System;
@@ -32,7 +33,7 @@ namespace StudentManApi.Services
             return await  _context.Students.Include(t=>t.Grades).FirstOrDefaultAsync(c => c.StudentId == studentId);
         }
         //根据姓名查出某些学生
-        public async Task<IEnumerable<Student>> GetStudentsAsync(StudentParameter studentParameter)
+        public async Task<PagedList<Student>> GetStudentsAsync(StudentParameter studentParameter)
         {
             if (studentParameter==null)
             {
@@ -54,9 +55,9 @@ namespace StudentManApi.Services
                 studentParameter.AddressBelong.Trim();
                 result = result.Where(t => t.Address== studentParameter.AddressBelong);
             }
-            result = result.Skip(studentParameter.PageSize * (studentParameter.PageNumber - 1))//第几页,就跳过该页所有的数据
-            .Take(studentParameter.PageSize);
-            return await result.ToListAsync();
+            //result = result.Skip(studentParameter.PageSize * (studentParameter.PageNumber - 1))//第几页,就跳过该页所有的数据
+            //.Take(studentParameter.PageSize);
+            return await PagedList<Student>.CreateAsync(result, studentParameter.PageNumber, studentParameter.PageSize);
         }
 
         //判断某个学生是否存在
