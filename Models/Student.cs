@@ -13,6 +13,7 @@ namespace StudentManApi.Models
     {
         [Key]
         public Guid StudentId { get; set; }
+        //需添加出生日期birthday
         [Required]
         [MaxLength (50)]
         public string Name { get; set; }

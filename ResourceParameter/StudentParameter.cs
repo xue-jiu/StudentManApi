@@ -10,7 +10,8 @@ namespace StudentManApi.ResourceParameter
         private const int MaxPageSize = 20;
         public string Keyword { get; set; }//名字中包含的关键字
         public string AddressBelong { get; set; }//根据住址查询
-        private int pageNumber;
+        private int pageNumber=1;
+        public string SortBy { get; set; }
         public int PageNumber
         {
             get { return pageNumber; }

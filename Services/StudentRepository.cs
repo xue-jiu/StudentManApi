@@ -57,6 +57,13 @@ namespace StudentManApi.Services
             }
             //result = result.Skip(studentParameter.PageSize * (studentParameter.PageNumber - 1))//第几页,就跳过该页所有的数据
             //.Take(studentParameter.PageSize);
+            if (!string.IsNullOrWhiteSpace(studentParameter.SortBy))
+            {
+                if (studentParameter.SortBy.ToLowerInvariant()== "nationbelong")
+                {
+                    result = result.OrderBy(c => c.NationBelong);
+                }
+            }
             return await PagedList<Student>.CreateAsync(result, studentParameter.PageNumber, studentParameter.PageSize);
         }
 

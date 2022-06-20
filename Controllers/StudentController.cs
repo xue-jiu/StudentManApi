@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using StudentManApi.API.Helper;
 using StudentManApi.Dtos;
@@ -25,10 +27,12 @@ namespace StudentManApi.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IStuRepository _stuRepository;
-        public StudentController(IMapper mapper, IStuRepository stuRepository)
+        IUrlHelper _urlHelper;
+        public StudentController(IMapper mapper, IStuRepository stuRepository,IUrlHelperFactory urlHelperFactory,IActionContextAccessor actionContextAccessor)
         {
             _mapper = mapper;
             _stuRepository = stuRepository;
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
         //获得指定学生
         [HttpGet("{studentId}",Name = "GetStudentRoute")]
