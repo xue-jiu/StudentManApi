@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StudentManApi.Dtos;
 using StudentManApi.Helper;
 using StudentManApi.Models;
 using StudentManApi.ResourceParameter;
@@ -13,9 +14,11 @@ namespace StudentManApi.Services
     public class StudentRepository : IStuRepository
     {
         private readonly  SchoolDbcontext _context;
-        public StudentRepository(SchoolDbcontext context)
+        IPropertyMappingService _propertyMappingService;
+        public StudentRepository(SchoolDbcontext context, IPropertyMappingService propertyMappingService)
         {
             _context = context;
+            _propertyMappingService = propertyMappingService;
         }
         //获取某个单元学生的成绩
         public async Task<Grade> GetGradeAsync(int unit, Guid studentId)
@@ -57,13 +60,16 @@ namespace StudentManApi.Services
             }
             //result = result.Skip(studentParameter.PageSize * (studentParameter.PageNumber - 1))//第几页,就跳过该页所有的数据
             //.Take(studentParameter.PageSize);
-            if (!string.IsNullOrWhiteSpace(studentParameter.SortBy))
-            {
-                if (studentParameter.SortBy.ToLowerInvariant()== "nationbelong")
-                {
-                    result = result.OrderBy(c => c.NationBelong);
-                }
-            }
+            //------------------------------------------------------------------------------
+            //if (!string.IsNullOrWhiteSpace(studentParameter.SortBy))
+            //{
+            //    if (studentParameter.SortBy.ToLowerInvariant()== "nationbelong")
+            //    {
+            //        result = result.OrderBy(c => c.NationBelong);
+            //    }
+            //}
+            var mappingDictionary = _propertyMappingService.GetPropertyMapping<StudentDto,Student>();
+            result= result.ApplySort(studentParameter.SortBy,mappingDictionary);
             return await PagedList<Student>.CreateAsync(result, studentParameter.PageNumber, studentParameter.PageSize);
         }
 

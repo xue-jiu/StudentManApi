@@ -27,12 +27,12 @@ namespace StudentManApi.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IStuRepository _stuRepository;
-        IUrlHelper _urlHelper;
-        public StudentController(IMapper mapper, IStuRepository stuRepository,IUrlHelperFactory urlHelperFactory,IActionContextAccessor actionContextAccessor)
+        //IUrlHelper _urlHelper;
+        public StudentController(IMapper mapper, IStuRepository stuRepository)
         {
             _mapper = mapper;
             _stuRepository = stuRepository;
-            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+            //_urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
         //获得指定学生
         [HttpGet("{studentId}",Name = "GetStudentRoute")]
@@ -174,7 +174,7 @@ namespace StudentManApi.Controllers
                     });
 
                 case ResourceUriType.NextPage:
-                    return Url.Link(nameof(GetStudents), new
+                    return Url.Link(nameof(GetStudents), new//controllerbase自带urlhelper
                     {
                         pageNumber = studentParameter.PageNumber + 1,
                         pageSize = studentParameter.PageSize,
