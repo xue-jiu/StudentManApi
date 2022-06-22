@@ -12,7 +12,8 @@ namespace StudentManApi.Services
         private Dictionary<string, PropertyMappingValue> _studentPropertyMapping =
             new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
             {
-                {"Id",new PropertyMappingValue(new List<string>(){ "Id"} ) }
+                {"Id",new PropertyMappingValue(new List<string>(){ "Id"} ) },
+                {"NationBelong",new PropertyMappingValue(new List<string>(){ "NationBelong" } ) }
             };
         private IList<IProperyMapping> _propertyMappings = new List<IProperyMapping>();//用IPropertyMapping这个接口是为了动态实现<tsource,tdestination>,多态的妙用
         public PropertyMappingService()

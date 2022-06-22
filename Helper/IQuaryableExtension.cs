@@ -9,7 +9,10 @@ namespace StudentManApi.Helper
 {
     public static class IQuaryableExtension
     {
-        public static IQueryable<T> ApplySort<T>(this IQueryable<T>source,string orderBy,Dictionary<string, PropertyMappingValue> mappingDictionary)
+        public static IQueryable<T> ApplySort<T>(
+            this IQueryable<T>source,
+            string orderBy,
+            Dictionary<string,  PropertyMappingValue> mappingDictionary)
         {
             if (source==null)
             {
@@ -26,12 +29,12 @@ namespace StudentManApi.Helper
                 return source;
             }
 
-            var orderByAfterSplite = orderBy.Split(",");
+            var orderByAfterSplite = orderBy.Split(",");//先区分一下是否需要 逆向排序
             foreach (var orderByClause in orderByAfterSplite.Reverse())
             {
                 var TrimedOrderBy=orderByClause.Trim();
                 var OrderDescending = TrimedOrderBy.EndsWith(" desc");//感觉也可以用正则表达式
-                var IndexOfFirstSpace = TrimedOrderBy.IndexOf(" ");//找到第一个匹配" "的索引,若没有则为-1
+                var IndexOfFirstSpace = TrimedOrderBy.IndexOf(" ", StringComparison.Ordinal);//找到第一个匹配" "的索引,若没有则为-1
                 var propertyName = IndexOfFirstSpace ==-1 ? TrimedOrderBy : TrimedOrderBy.Remove(IndexOfFirstSpace);
                 if (!mappingDictionary.ContainsKey(propertyName))
                 {
@@ -48,7 +51,7 @@ namespace StudentManApi.Helper
                     {
                         OrderDescending = !OrderDescending;
                     }
-                    source = source.OrderBy(DestinationPropertie + (OrderDescending ? "descend" : "ascend"));
+                    source = source.OrderBy(DestinationPropertie + (OrderDescending ? " descending" : " ascending"));
                 }
             }
             return source;
