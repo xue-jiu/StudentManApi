@@ -170,7 +170,8 @@ namespace StudentManApi.Controllers
                         pageNumber = studentParameter.PageNumber-1,
                         pageSize=studentParameter.PageSize,
                         Keyword= studentParameter.Keyword,
-                        Address=studentParameter.AddressBelong
+                        Address=studentParameter.AddressBelong,
+                        SortBy=studentParameter.SortBy
                     });
 
                 case ResourceUriType.NextPage:
@@ -179,7 +180,9 @@ namespace StudentManApi.Controllers
                         pageNumber = studentParameter.PageNumber + 1,
                         pageSize = studentParameter.PageSize,
                         Keyword = studentParameter.Keyword,
-                        Address = studentParameter.AddressBelong
+                        Address = studentParameter.AddressBelong,
+                        SortBy = studentParameter.SortBy
+
                     });
 
                 default:
@@ -188,7 +191,8 @@ namespace StudentManApi.Controllers
                         pageNumber = studentParameter.PageNumber,
                         pageSize = studentParameter.PageSize,
                         Keyword = studentParameter.Keyword,
-                        Address = studentParameter.AddressBelong
+                        Address = studentParameter.AddressBelong,
+                        SortBy = studentParameter.SortBy
                     });
 
 
