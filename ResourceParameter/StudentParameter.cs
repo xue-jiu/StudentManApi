@@ -30,5 +30,7 @@ namespace StudentManApi.ResourceParameter
             get { return pageSize; }
             set { pageSize = (value>MaxPageSize)? MaxPageSize:value; }
         }
+        public string Fields { get; set; }
+
     }
 }

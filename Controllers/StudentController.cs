@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using StudentManApi.API.Helper;
 using StudentManApi.Dtos;
+using StudentManApi.Helper;
 using StudentManApi.Helpers;
 using StudentManApi.Models;
 using StudentManApi.ResourceParameter;
@@ -36,14 +37,14 @@ namespace StudentManApi.Controllers
         }
         //获得指定学生
         [HttpGet("{studentId}",Name = "GetStudentRoute")]
-        public async Task<IActionResult> GetStudent([FromRoute] Guid studentId)
+        public async Task<IActionResult> GetStudent([FromRoute] Guid studentId, [FromQuery] string fields)
         {
             if (!await _stuRepository.StudentExistsAsync(studentId))
             {
                 return NotFound("查无此人");
             }
             var studentFromRepo =await _stuRepository.GetStudentAsync(studentId);
-            return Ok(_mapper.Map<StudentDto>(studentFromRepo));
+            return Ok(_mapper.Map<StudentDto>(studentFromRepo).ShapeData(fields));
         }
         //关键字查询某个学生
         [HttpGet(Name =nameof(GetStudents))]
@@ -67,7 +68,7 @@ namespace StudentManApi.Controllers
             {
                 return NotFound("没有符合该特征的学生");
             }
-            return Ok(_mapper.Map<IEnumerable<StudentDto>>(studentsFromRepo));
+            return Ok(_mapper.Map<IEnumerable<StudentDto>>(studentsFromRepo).ShapeData(studentParameter.Fields));
         }
         //增
         [HttpPost]

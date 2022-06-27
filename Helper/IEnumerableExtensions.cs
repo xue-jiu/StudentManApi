@@ -9,7 +9,7 @@ namespace StudentManApi.Helper
 {
     public static class IEnumerableExtensions//静态类
     {
-        public static IEnumerable<ExpandoObject> ShapeData<Tsource>(
+        public static IEnumerable<ExpandoObject> ShapeData<Tsource>(//使用expando也是为了解耦,避免了显式类型转换
             this IEnumerable<Tsource> source,
             string fields
             )
@@ -47,7 +47,7 @@ namespace StudentManApi.Helper
                 foreach (var propertyInfo in propertyInfoList)
                 {
                     var propertyValue = propertyInfo.GetValue(sourceObject);
-                    ((IDictionary<string, object>)dataShapedObject).Add(propertyInfo.Name, propertyValue);
+                    ((IDictionary<string, object>)dataShapedObject).Add(propertyInfo.Name, propertyValue);//直接用IDictionary如何?
                 }
                 ExpandoObjectList.Add(dataShapedObject);
             }
